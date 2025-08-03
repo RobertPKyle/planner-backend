@@ -17,7 +17,13 @@ exports.createAvailability = async (req, res) => {
 
 exports.getAvailability = async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM availability');
+    const result = await pool.query(`
+      SELECT a.*
+      FROM availability a
+      LEFT JOIN bookings b ON a.start_time = b.start_time
+      WHERE b.start_time IS NULL
+    `);
+
     res.json(
       result.rows.map((row) => ({
         start: row.start_time,
@@ -26,8 +32,7 @@ exports.getAvailability = async (req, res) => {
       }))
     );
   } catch (err) {
-    console.error(err);
+    console.error('getAvailability failed:', err.message);
     res.status(500).json({ error: 'Server error' });
   }
 };
-
