@@ -1,12 +1,12 @@
 const pool = require('../db');
 
 exports.createAvailability = async (req, res) => {
-  const { start, end } = req.body;
+  const { start, end, location } = req.body;
 
   try {
     await pool.query(
-      'INSERT INTO availability (start_time, end_time) VALUES ($1, $2)',
-      [start, end]
+      'INSERT INTO availability (start_time, end_time, location) VALUES ($1, $2, $3)',
+      [start, end, location]
     );
     res.status(201).json({ message: 'Availability added' });
   } catch (err) {
@@ -22,10 +22,12 @@ exports.getAvailability = async (req, res) => {
       result.rows.map((row) => ({
         start: row.start_time,
         end: row.end_time,
+        location: row.location,
       }))
     );
   } catch (err) {
     console.error(err);
-    res.status(500).send('Server error');
+    res.status(500).json({ error: 'Server error' });
   }
 };
+
