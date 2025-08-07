@@ -15,26 +15,26 @@ exports.createAvailability = async (req, res) => {
   }
 };
 
+
 exports.getAvailability = async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT a.start_time, a.end_time, a.location,
-        CASE
-          WHEN b.start_time IS NOT NULL THEN 'booked'
-          ELSE 'available'
+        CASE WHEN b.start_time IS NOT NULL THEN 'booked'
+             ELSE 'available'
         END AS status
       FROM availability a
       LEFT JOIN bookings b ON a.start_time = b.start_time
     `);
 
-    res.json(
-      result.rows.map((row) => ({
-        start: row.start_time,
-        end: row.end_time,
-        location: row.location,
-        status: row.status,
-      }))
-    );
+    const events = result.rows.map(row => ({
+      start: row.start_time,
+      end: row.end_time,
+      location: row.location,
+      status: row.status,
+    }));
+
+    res.json(events);
   } catch (err) {
     console.error('getAvailability failed:', err.message);
     res.status(500).json({ error: 'Server error' });
