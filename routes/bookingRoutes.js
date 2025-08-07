@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // or require from env
-
+const express = require('express');
+const app = express();
 
 app.post('/create-checkout-session', async (req, res) => {
   try {
@@ -24,5 +25,3 @@ app.post('/create-checkout-session', async (req, res) => {
     res.status(500).json({ error: 'Stripe session creation failed' });
   }
 });
-
-module.exports = router;
