@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY); // or require from env
-const express = require('express');
-const app = express();
 
-app.post('/create-checkout-session', async (req, res) => {
+
+router.post('/create-checkout-session', async (req, res) => {
+  const { name, email, phone, reason, start } = req.body;
   try {
     const session = await stripe.checkout.sessions.create({
       line_items: [
@@ -25,3 +25,6 @@ app.post('/create-checkout-session', async (req, res) => {
     res.status(500).json({ error: 'Stripe session creation failed' });
   }
 });
+
+module.exports = router;
+
