@@ -5,9 +5,8 @@ require('dotenv').config();
 const availabilityRoutes = require('./routes/availabilityRoutes');
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-
+app.use(cors({ origin: process.env.FRONTEND_URL }));
 
 app.use('/availability', availabilityRoutes);
 
