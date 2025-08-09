@@ -2,11 +2,20 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const availabilityRoutes = require('./routes/availabilityRoutes');
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+// Easiest for dev:
+app.use(cors({
+  origin: [FRONTEND_URL, 'http://localhost:5173'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false
+}));
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: process.env.FRONTEND_URL }));
+
+const availabilityRoutes = require('./routes/availabilityRoutes');
 
 app.use('/availability', availabilityRoutes);
 
